@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>数学分析讲义 · 交互学习 | 第 1–3 章</title>
+<meta name="description" content="基于程艺、陈卿、李平《数学分析讲义》第一册的交互式定理与题目索引，支持定理—题目双向关联、跳转与双搜索。">
+<meta name="theme-color" content="#9b2f24">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="数分讲义">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css?v=20261115">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#/">
+    <span class="brand-seal">数<br>分</span>
+    <span class="brand-text">
+      <strong>数学分析讲义</strong>
+      <small>第一册 · 交互学习</small>
+    </span>
+  </a>
+
+  <div class="search-duo" role="search">
+    <label class="searchbox sb-theorem">
+      <span class="sb-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M10.5 4a6.5 6.5 0 1 0 4.1 11.55l4.4 4.4 1.4-1.4-4.4-4.4A6.5 6.5 0 0 0 10.5 4Zm0 2a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z"/></svg>
+      </span>
+      <input id="search-theorem" type="search" autocomplete="off" placeholder="搜索定理 / 定义 / 推论…" aria-label="搜索定理">
+      <kbd>/</kbd>
+      <span class="sb-label">定理</span>
+    </label>
+    <label class="searchbox sb-problem">
+      <span class="sb-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5V3Zm2 2v14h10V7h-2V5H7Zm2 5h6v1.6H9V10Zm0 3.4h6V15H9v-1.6Z"/></svg>
+      </span>
+      <input id="search-problem" type="search" autocomplete="off" placeholder="搜索题目 / 习题 / 例题…" aria-label="搜索题目">
+      <kbd>P</kbd>
+      <span class="sb-label">题目</span>
+    </label>
+  </div>
+
+  <nav class="topnav" aria-label="主导航">
+    <a href="#/theorems" data-nav="theorems">定理库</a>
+    <a href="#/problems" data-nav="problems">题库</a>
+    <a href="#/graph" data-nav="graph">知识图谱</a>
+    <button class="icon-btn" id="theme-toggle" title="切换深浅色" aria-label="切换深浅色">
+      <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z"/></svg>
+    </button>
+    <button class="icon-btn menu-btn" id="menu-toggle" title="目录" aria-label="打开目录">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"/></svg>
+    </button>
+  </nav>
+
+  <div class="search-pop" id="search-pop" hidden></div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="drawer-head"><span>目录</span><button id="drawer-close" aria-label="关闭目录">×</button></div>
+    <div class="side-quick">
+      <a href="#/" data-nav="home" class="side-link"><span class="si">◈</span>学习概览</a>
+      <a href="#/theorems" data-nav="theorems" class="side-link"><span class="si">∑</span>定理索引<span class="side-count" id="count-thm">92</span></a>
+      <a href="#/problems" data-nav="problems" class="side-link"><span class="si">✎</span>题目索引<span class="side-count" id="count-prob">333</span></a>
+      <a href="#/graph" data-nav="graph" class="side-link"><span class="si">◉</span>定理—题目图谱</a>
+      <a href="#/bookmarks" data-nav="bookmarks" class="side-link"><span class="si">★</span>我的收藏</a>
+    </div>
+
+    <div class="side-title">章节目录</div>
+    <nav id="chapter-nav" class="chapter-nav" aria-label="章节目录"></nav>
+
+    <div class="side-note">
+      <div class="side-note-title">关于本页</div>
+      <p>依据程艺、陈卿、李平《数学分析讲义》第一册第 1–3 章整理。定理与题目双向关联，可跳转、可检索；公式细节以教材原文为准。</p>
+      <p class="side-source">教材原文 PDF · <a href="assets/textbook.pdf" target="_blank" rel="noopener">打开整本</a></p>
+      <p class="side-source">平板访问 · <a href="tablet.html">扫码页</a></p>
+    </div>
+  </aside>
+
+  <main id="app" class="app" tabindex="-1"></main>
+</div>
+
+<div class="mobile-scrim" id="mobile-scrim" hidden></div>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="查看教材原图">
+  <button class="lb-close" id="lb-close" aria-label="关闭">×</button>
+  <div class="lb-toolbar">
+    <button id="lb-zoom-out" aria-label="缩小">−</button>
+    <span id="lb-zoom-label">100%</span>
+    <button id="lb-zoom-in" aria-label="放大">+</button>
+    <button id="lb-reset">适应</button>
+  </div>
+  <div class="lb-stage" id="lb-stage"><img id="lb-img" alt="教材原文"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="data.js?v=20261115"></script>
+<script src="app.js?v=20261115"></script>
+</body>
+</html>

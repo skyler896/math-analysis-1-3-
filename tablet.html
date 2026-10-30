@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>在平板上打开 · 数学分析讲义</title>
+<meta name="theme-color" content="#9b2f24">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root{--paper:#f4efe4;--paper2:#fffdf8;--ink:#1c2a33;--ink2:#52616c;--ink3:#8a8478;--line:#ded3c0;--accent:#9b2f24;--serif:"Noto Serif SC","Songti SC",SimSun,serif;--sans:"Segoe UI","Microsoft YaHei",sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px 18px;background-image:radial-gradient(circle at 15% 10%,rgba(196,154,44,.08),transparent 30%)}
+  .card{width:min(720px,100%);background:var(--paper2);border:1px solid var(--line);border-radius:20px;padding:clamp(24px,4vw,48px);box-shadow:0 18px 50px rgba(28,42,51,.08);text-align:center}
+  .seal{width:56px;height:56px;margin:0 auto 16px;background:var(--accent);color:#fff7e9;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1.02;box-shadow:inset 0 0 0 2px rgba(255,241,216,.4)}
+  h1{font-size:clamp(26px,4vw,36px);margin:6px 0 8px;letter-spacing:.04em}
+  .sub{font-family:var(--sans);font-size:13px;color:var(--ink3);letter-spacing:.08em;margin-bottom:26px}
+  .qr{display:inline-flex;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff;margin:4px 0 18px}
+  .qr img,.qr canvas{display:block;width:220px;height:220px}
+  .url{font-family:var(--mono);font-size:clamp(15px,2.4vw,19px);background:var(--paper);border:1px dashed var(--line);border-radius:9px;padding:11px 14px;margin:0 auto 20px;max-width:520px;word-break:break-all;color:var(--accent);font-weight:600}
+  .steps{text-align:left;max-width:520px;margin:0 auto 22px;font-family:var(--sans);font-size:13.5px;line-height:1.85;color:var(--ink2)}
+  .steps b{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper2);font-size:11px;align-items:center;justify-content:center;margin-right:7px;vertical-align:1px}
+  .go{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff8ea;border-radius:9px;padding:12px 22px;font-family:var(--sans);font-size:14px;text-decoration:none}
+  .go:hover{filter:brightness(1.06)}
+  .note{font-family:var(--sans);font-size:11.5px;color:var(--ink3);line-height:1.7;margin-top:20px;border-top:1px dashed var(--line);padding-top:14px;text-align:left}
+  .warn{display:none;background:#fff4e5;border:1px solid #e8c48a;color:#7a4c12;border-radius:8px;padding:10px 12px;font-family:var(--sans);font-size:12.5px;margin:0 auto 18px;max-width:520px;text-align:left}
+  @media (max-width:560px){.qr img,.qr canvas{width:190px;height:190px}.card{padding:22px 16px}}
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="seal">数<br>分</div>
+    <h1>在平板上打开</h1>
+    <div class="sub">同一 Wi-Fi · 扫码即用 · 可添加到主屏幕</div>
+
+    <div class="warn" id="warn">没有识别到电脑的局域网地址。请双击“启动网站.bat”后再打开本页。</div>
+
+    <div class="qr" id="qrcode"></div>
+    <div class="url" id="url">正在获取地址…</div>
+
+    <div class="steps">
+      <div><b>1</b>平板与这台电脑连接同一个 Wi-Fi。</div>
+      <div><b>2</b>用平板相机或浏览器扫描上方二维码。</div>
+      <div><b>3</b>打开后点击浏览器菜单，选择“添加到主屏幕”，以后可像 App 一样进入。</div>
+    </div>
+
+    <a class="go" id="go" href="index.html">进入网站 <span>→</span></a>
+
+    <div class="note">
+      平板地址由这台电脑的局域网 IP 决定。如果电脑重启或换了网络导致 IP 变化，请重新双击“启动网站.bat”，它会用新地址打开本页并生成新的二维码。<br>
+      如果平板打不开：检查两台设备是否在同一网络，以及 Windows 防火墙是否允许 8080 端口（启动脚本会尝试自动放行）。
+    </div>
+  </main>
+<script src="assets/qrcode.min.js"></script>
+<script>
+(function(){
+  const params = new URLSearchParams(location.search);
+  let ip = params.get('ip') || '';
+  const host = location.hostname;
+  if(!ip && host && host !== 'localhost' && host !== '127.0.0.1') ip = host;
+  const port = location.port || '80';
+  const isLocalName = !ip || ip === 'localhost' || ip === '127.0.0.1';
+  const url = isLocalName ? '' : `http://${ip}:${port}/`;
+  const urlEl = document.getElementById('url');
+  const goEl = document.getElementById('go');
+  if(url){
+    urlEl.textContent = url;
+    goEl.href = url;
+    try {
+      new QRCode(document.getElementById('qrcode'), {
+        text: url, width: 220, height: 220,
+        colorDark: '#1c2a33', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } catch(e){}
+  } else {
+    document.getElementById('warn').style.display = 'block';
+    urlEl.textContent = '请从“启动网站.bat”打开本页';
+  }
+})();
+</script>
+</body>
+</html>
