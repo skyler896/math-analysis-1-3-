@@ -524,3 +524,5 @@ body{-webkit-tap-highlight-color:transparent}
   .app{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
 }
 .lb-stage{touch-action:none}
+
+.badge.k-方法{background:#7d5a8c}

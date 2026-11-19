@@ -1,7 +1,7 @@
 {
   "name": "数学分析讲义 · 交互学习",
   "short_name": "数分讲义",
-  "description": "《数学分析讲义》第一册第 1–3 章：定理、题目双向关联与搜索",
+  "description": "《数学分析讲义》第一册第 1–6 章：定理、题目双向关联与搜索",
   "lang": "zh-CN",
   "start_url": "./index.html",
   "scope": "./",

@@ -1,5 +1,5 @@
 /* 离线缓存：GitHub Pages / HTTPS 下生效 */
-const CACHE = 'math-analysis-v1-20261030';
+const CACHE = 'math-analysis-v2-20261119';
 const CORE = [
   './',
   './index.html',

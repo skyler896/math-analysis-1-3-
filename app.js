@@ -11,7 +11,7 @@ const CHAPTERS = DATA.chapters;
 const SECTIONS = CHAPTERS.flatMap(c => c.sections.map(s => ({...s, chapter: c.num, chapterTitle: c.title})));
 const SECMAP = new Map(SECTIONS.map(s => [s.num, s]));
 const CHMAP = new Map(CHAPTERS.map(c => [c.num, c]));
-const KIND_ORDER = {'定义':1,'定理':2,'推论':3,'引理':4};
+const KIND_ORDER = {'定义':1,'定理':2,'推论':3,'引理':4,'方法':5};
 const app = document.getElementById('app');
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -211,14 +211,14 @@ function probRow(it, opts = {}){
 /* ---------------- home ---------------- */
 function renderHome(){
   const stats = DATA.meta.stats;
-  const core = ['thm-1-11','thm-1-13','thm-1-7','thm-1-38','thm-2-11','thm-2-14','thm-3-15','thm-3-21','thm-3-33']
+  const core = ['thm-1-11','thm-1-13','thm-1-7','thm-2-11','thm-3-15','thm-3-33','thm-4-4','thm-5-15','thm-5-22','thm-6-9']
     .map(id => BY_ID.get(id)).filter(Boolean);
   const recentItems = recent.map(id => BY_ID.get(id)).filter(Boolean).slice(0, 4);
   app.innerHTML = `
   <section class="hero">
     <div class="hero-kicker">MATHEMATICAL ANALYSIS · INTERACTIVE INDEX</div>
     <h1>把定理与题目<br>织成一张<em>知识网络</em></h1>
-    <p class="hero-sub">以程艺、陈卿、李平《数学分析讲义》第一册第 1–3 章为底本，整理 ${FORMAL.length} 条定义·定理·推论，${PROBS.length} 道例题与习题。每条定理可跳到相关题目，每道题可回溯所用定理；支持定理、题目双通道搜索。</p>
+    <p class="hero-sub">以程艺、陈卿、李平《数学分析讲义》第一册第 1–6 章为底本，整理 ${FORMAL.length} 条定义·定理·推论·方法专题，${PROBS.length} 道例题与习题。每条定理可跳到相关题目，每道题可回溯所用定理；支持定理、题目双通道搜索。</p>
     <div class="hero-actions">
       <a class="btn btn-primary" href="#/section/1.1">开始学习 <span>→</span></a>
       <a class="btn btn-accent" href="#/graph">打开知识图谱</a>
@@ -228,13 +228,13 @@ function renderHome(){
   </section>
 
   <div class="stat-grid">
-    <div class="stat"><div class="stat-num">${stats.chapters}<small>章</small></div><div class="stat-label">覆盖范围 · 第 1–3 章</div></div>
-    <div class="stat"><div class="stat-num">${stats.theorems}<small>条</small></div><div class="stat-label">定义 · 定理 · 推论 · 引理</div></div>
+    <div class="stat"><div class="stat-num">${stats.chapters}<small>章</small></div><div class="stat-label">覆盖范围 · 第 1–6 章</div></div>
+    <div class="stat"><div class="stat-num">${stats.theorems}<small>条</small></div><div class="stat-label">定义 · 定理 · 推论 · 方法</div></div>
     <div class="stat"><div class="stat-num">${stats.problems}<small>道</small></div><div class="stat-label">例题与课后习题</div></div>
     <div class="stat"><div class="stat-num">${stats.edges}<small>条</small></div><div class="stat-label">定理与题目的双向关联</div></div>
   </div>
 
-  <div class="sec-head"><h2>三章内容 <span class="count">CHAPTERS</span></h2><a class="more" href="#/theorems">定理总览 →</a></div>
+  <div class="sec-head"><h2>六章内容 <span class="count">CHAPTERS</span></h2><a class="more" href="#/theorems">定理总览 →</a></div>
   <div class="chapter-grid">
     ${CHAPTERS.map(ch => {
       const total = ch.sections.length;
@@ -358,11 +358,11 @@ function renderTheorems(q){
   );
   if(search) list.sort((a,b) => scoreItem(b,search) - scoreItem(a,search) || a.page - b.page);
   else list.sort((a,b) => a.chapter - b.chapter || KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || a.num.localeCompare(b.num, undefined, {numeric:true}));
-  const kinds = ['全部','定义','定理','推论','引理'];
+  const kinds = ['全部','定义','定理','推论','引理','方法'];
   const qlink = (p) => '#/theorems?' + new URLSearchParams(p).toString();
   app.innerHTML = `
   <div class="breadcrumb"><a href="#/">概览</a><span>/</span><span>定理索引</span></div>
-  <div class="sec-head"><h2>定理索引 <span class="count">${FORMAL.length} 条定义·定理·推论</span></h2></div>
+  <div class="sec-head"><h2>定理索引 <span class="count">${FORMAL.length} 条定义·定理·推论·方法</span></h2></div>
   <div class="toolbar">
     <span class="tb-label">类型</span>
     ${kinds.map(k => `<a class="chip ${kind === k ? 'active' : ''}" href="${qlink({kind:k, ...(chapter!=='全部'?{chapter}:{}) , ...(search?{q:search}:{})})}">${k}</a>`).join('')}
@@ -609,6 +609,7 @@ function renderGraph(q){
         <span><i style="background:#2d5f7e"></i>定义</span>
         <span><i style="background:#2d6b68"></i>推论</span>
         <span><i style="background:#9a6a12"></i>引理</span>
+        <span><i style="background:#7d5a8c"></i>方法</span>
         <span><i style="background:#5d6b78"></i>习题</span>
         <span><i style="background:#2f6b4f"></i>例题</span>
       </div>
@@ -725,7 +726,7 @@ function initGraph(chapterFilter, focusId){
       const isHover = hover === nd;
       const isFocus = focusNode === nd;
       let color = nd.type === 'prob' ? (nd.item.kind === '例' ? '#2f6b4f' : '#5d6b78')
-        : (nd.item.kind === '定理' ? '#9b2f24' : nd.item.kind === '定义' ? '#2d5f7e' : nd.item.kind === '推论' ? '#2d6b68' : '#9a6a12');
+        : (nd.item.kind === '定理' ? '#9b2f24' : nd.item.kind === '定义' ? '#2d5f7e' : nd.item.kind === '推论' ? '#2d6b68' : nd.item.kind === '方法' ? '#7d5a8c' : '#9a6a12');
       ctx.beginPath();
       ctx.arc(nd.x, nd.y, nd.r * (isHover?1.45:1) * (isFocus?1.5:1), 0, Math.PI*2);
       ctx.fillStyle = color; ctx.globalAlpha = nd.type==='prob' ? 0.78 : 0.95; ctx.fill(); ctx.globalAlpha = 1;
